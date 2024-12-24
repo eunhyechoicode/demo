@@ -1,9 +1,13 @@
-import { Button } from '@mui/material';
+import { Button } from '@mui/material'
 
-export default function MyButton({ children, onClick }) {
+export default function MyButton({ children, ...props }) {
   return (
-    <Button variant="contained" onClick={onClick}>
+    <Button 
+      variant="contained"
+      color="primary"
+      {...props}
+    >
       {children}
     </Button>
-  );
-}; 
+  )
+} 
