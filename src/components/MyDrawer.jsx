@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   Divider,
@@ -6,18 +6,18 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Typography
-} from '@mui/material'
+  Typography,
+} from '@mui/material';
 
-import APP_NAME from '../fixtures/app'
+import APP_NAME from '../fixtures/app';
 
 export default function MyDrawer({ navItems }) {
-  const location = useLocation()
-  const navigate = useNavigate()
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const handleNavigation = (path) => {
-    navigate(`/${path.toLowerCase()}`)
-  }
+  const handleNavigation = path => {
+    navigate(`/${path.toLowerCase()}`);
+  };
 
   return (
     <Box>
@@ -28,14 +28,14 @@ export default function MyDrawer({ navItems }) {
       </Box>
       <Divider />
       <List>
-        {navItems.map((item) => (
+        {navItems.map(item => (
           <ListItem key={item} disablePadding>
-            <ListItemButton 
+            <ListItemButton
               onClick={() => handleNavigation(item)}
               selected={location.pathname === `/${item.toLowerCase()}`}
             >
-              <ListItemText 
-                primary={item} 
+              <ListItemText
+                primary={item}
                 primaryTypographyProps={{ align: 'center' }}
               />
             </ListItemButton>
@@ -43,5 +43,5 @@ export default function MyDrawer({ navItems }) {
         ))}
       </List>
     </Box>
-  )
+  );
 }

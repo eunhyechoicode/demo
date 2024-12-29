@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -9,25 +9,25 @@ import {
   Toolbar,
   Typography,
   Button,
-  Container
-} from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
+  Container,
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
-import MyDrawer from '../MyDrawer'
-import PATHS from '../../fixtures/paths'
-import APP_NAME from '../../fixtures/app'
+import MyDrawer from '../MyDrawer';
+import PATHS from '../../fixtures/paths';
+import APP_NAME from '../../fixtures/app';
 
-const DRAWER_WIDTH = 240
+const DRAWER_WIDTH = 240;
 
-const navItems = Object.keys(PATHS)
+const navItems = Object.keys(PATHS);
 
 export default function MyPage({ children }) {
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const navigate = useNavigate()
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
-    setMobileOpen((prevState) => !prevState)
-  }
+    setMobileOpen(prevState => !prevState);
+  };
 
   return (
     <Box>
@@ -42,15 +42,11 @@ export default function MyPage({ children }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography 
-            variant="h6" 
-            component="div" 
-            flex={1}
-          >
+          <Typography variant="h6" component="div" flex={1}>
             {APP_NAME}
           </Typography>
           <Box>
-            {navItems.map((item) => (
+            {navItems.map(item => (
               <Button
                 key={item}
                 color="inherit"
@@ -68,7 +64,7 @@ export default function MyPage({ children }) {
         open={mobileOpen}
         onClose={handleDrawerToggle}
         PaperProps={{
-          style: { width: DRAWER_WIDTH }
+          style: { width: DRAWER_WIDTH },
         }}
       >
         <MyDrawer navItems={navItems} onClick={handleDrawerToggle} />
@@ -78,5 +74,5 @@ export default function MyPage({ children }) {
         {children}
       </Container>
     </Box>
-  )
+  );
 }
