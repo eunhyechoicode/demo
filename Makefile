@@ -7,6 +7,17 @@ DOCKER_PORT=5173
 WORKDIR=/usr/src/app
 DOCKER_DEV_VOLUME=$(WORKDIR)
 
+# Makefile for Kind cluster management and app deployment
+# Variables
+# Extract cluster name dynamically from kind-config.yaml
+KIND_CLUSTER_NAME=$(shell awk '/name:/ { print $$2; exit }' $(KIND_CONFIG_FILE))
+KIND_CONFIG_FILE=kind-config.yaml
+KUBECTL_NAMESPACE_FILE=namespace.yaml
+# Extract namespace value dynamically from namespace.yaml
+NAMESPACE=$(shell awk '/metadata:/ {found=1} found && /name:/ {print $$2; exit}' $(KUBECTL_NAMESPACE_FILE))
+KUBECTL_DEPLOYMENT_FILE=deployment.yaml
+KUBECTL_SERVICE_FILE=service.yaml
+
 # Helper tasks
 .PHONY: verify-image
 verify-image:
@@ -67,3 +78,50 @@ dev-mode: build verify-image verify-container
 		-w $(WORKDIR) \
 		$(DOCKER_IMAGE_NAME) \
 		npm run dev
+
+# Create Kind cluster using the configuration file
+.PHONY: kind-create
+kind-create:
+	kind create cluster --config $(KIND_CONFIG_FILE)
+
+# Create a namespace using the namespace.yaml file
+.PHONY: namespace-create
+namespace-create:
+	kubectl apply -f $(KUBECTL_NAMESPACE_FILE)
+
+# Set the current Kubernetes context to use the namespace
+.PHONY: set-context
+set-context:
+	kubectl config set-context --current --namespace=$(NAMESPACE)
+
+# Load Docker image into the Kind cluster
+.PHONY: kind-load-image
+kind-load-image:
+	kind load docker-image $(DOCKER_IMAGE_NAME) --name $(KIND_CLUSTER_NAME)
+
+# Deploy the application in the Kind cluster
+.PHONY: kind-deploy
+kind-deploy:
+	kubectl apply -f $(KUBECTL_DEPLOYMENT_FILE)
+	kubectl apply -f $(KUBECTL_SERVICE_FILE)
+
+# Delete the Kind cluster
+.PHONY: kind-delete
+kind-delete:
+	kind delete cluster --name $(KIND_CLUSTER_NAME)
+
+# Shortcut: Run all steps to create the cluster, load the app, and deploy it
+.PHONY: kind-run
+kind-run: kind-create build verify-image verify-container namespace-create set-context kind-load-image kind-deploy
+
+# Run Docker container in development mode and deploy to Kind cluster with hot-reloading
+.PHONY: kind-dev-run
+kind-dev-run: kind-create build verify-image namespace-create set-context kind-load-image kind-deploy
+	# Explicitly wait for pod readiness
+	kubectl wait --for=condition=containersReady pod -l app=my-app -n $(NAMESPACE) --timeout=120s
+	# Check the status of the pod
+	@echo "Confirming pod status:"
+	kubectl get pods -n $(NAMESPACE)
+	# Port-forward after confirming readiness
+	kubectl port-forward svc/my-app-service $(DOCKER_PORT):80 &
+	@echo "Kind Dev Run ready: http://localhost:$(DOCKER_PORT)"@echo "Kind Dev Run started. Hot-reloading should now be active at http://localhost:$(DOCKER_PORT)."@echo "Kind Dev Run started. Hot-reloading should now be active at http://localhost:$(DOCKER_PORT)."

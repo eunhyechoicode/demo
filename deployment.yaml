@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-deployment
+  namespace: my-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app-container
+          image: my-app-image
+          imagePullPolicy: Never
+          command: ["sh", "-c"]
+          args: ["npm install && npm run dev"]
+          volumeMounts:
+            - name: app-source
+              mountPath: /usr/src/app
+      volumes:
+        - name: app-source
+          hostPath:
+            path: /mnt/demo
+            type: Directory
