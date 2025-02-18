@@ -1,8 +1,9 @@
+import PropTypes from 'prop-types';
 import { Controller } from 'react-hook-form';
 import { TextField } from '@mui/material';
 import { useMyFormContext } from './MyForm/MyFormContext';
 
-const MyTextField = ({ name, label, rules, ...props }) => {
+export default function MyTextField({ name, label, rules, ...props }) {
   const control = useMyFormContext();
 
   return (
@@ -23,6 +24,10 @@ const MyTextField = ({ name, label, rules, ...props }) => {
       )}
     />
   );
-};
+}
 
-export default MyTextField;
+MyTextField.propTypes = {
+  name: PropTypes.string,
+  label: PropTypes.string,
+  rules: PropTypes.object,
+};

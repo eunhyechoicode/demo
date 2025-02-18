@@ -36,7 +36,6 @@ export default [
         { allowConstantExport: true },
       ],
       'no-unused-vars': 'error',
-      'no-unused-imports': 'error',
     },
   },
 ]

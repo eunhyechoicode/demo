@@ -96,3 +96,76 @@ This project includes commands to manage Docker containers using the `Makefile`.
 | `make exec-shell`    | Opens an interactive shell in the running container.    |
 
 ---
+
+## Deploying with Kind Cluster
+
+This project supports deployment to a local Kubernetes cluster using Kind (Kubernetes in Docker). Ensure you have Kind and kubectl installed before proceeding.
+
+### Kind Cluster Management Commands
+
+1. **Create a Kind cluster**:
+   ```bash
+   make kind-create
+   ```
+
+2. **Create namespace and set context**:
+   ```bash
+   make namespace-create
+   make set-context
+   ```
+
+3. **Load and deploy the application**:
+   ```bash
+   make kind-load-image
+   make kind-deploy
+   ```
+
+4. **Complete deployment in one command**:
+   ```bash
+   make kind-run
+   ```
+
+5. **Delete the Kind cluster**:
+   ```bash
+   make kind-delete
+   ```
+
+### Kind Command Reference Table
+
+| Command              | Description                                             |
+|----------------------|---------------------------------------------------------|
+| `make kind-create`   | Creates a Kind cluster using configuration file         |
+| `make namespace-create` | Creates a Kubernetes namespace                       |
+| `make set-context`   | Sets Kubernetes context to use the specified namespace  |
+| `make kind-load-image` | Loads Docker image into the Kind cluster             |
+| `make kind-deploy`   | Deploys the application to the Kind cluster            |
+| `make kind-run`      | Complete setup: creates cluster, builds and deploys app |
+| `make kind-delete`   | Deletes the Kind cluster                               |
+| `make kind-dev-run`  | Deploys to Kind with development mode and hot-reloading|
+
+---
+
+## Helm Deployment
+
+The project includes Helm charts for managing Kubernetes deployments across different environments.
+
+### Helm Configuration
+
+- **Available Environments**: local, qa, prod
+- **Default Environment**: local
+- **Charts Location**: `helm/` directory
+
+### Environment-Specific Deployment
+
+To deploy using Helm with a specific environment configuration:
+
+```bash
+HELM_ENVIRONMENT=<environment> make helm-deploy
+```
+
+Replace `<environment>` with one of: local, qa, or prod
+
+### Notes
+- Ensure Helm is installed and properly configured
+- Helm charts are organized in separate directories under `helm/`
+- Environment-specific values can be configured in the respective value files

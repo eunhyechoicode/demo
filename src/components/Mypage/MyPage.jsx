@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
@@ -76,3 +77,7 @@ export default function MyPage({ children }) {
     </Box>
   );
 }
+
+MyPage.propTypes = {
+  children: PropTypes.node,
+};

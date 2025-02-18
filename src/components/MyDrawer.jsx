@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -45,3 +46,7 @@ export default function MyDrawer({ navItems }) {
     </Box>
   );
 }
+
+MyDrawer.propTypes = {
+  navItems: PropTypes.array,
+};
