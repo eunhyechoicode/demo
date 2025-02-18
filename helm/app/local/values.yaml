@@ -1,0 +1,8 @@
+replicaCount: 1
+
+ingress:
+  hosts:
+    - host: "localhost"
+      paths:
+        - path: /
+          pathType: Prefix

@@ -15,12 +15,9 @@ COPY . .
 
 ## Step 6: Build the Vite app for production
 #RUN npm run build
-#
+
 ## Step 7: Set the command to serve the application with Vite's development server
 #CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
-#
-## Expose the port used by the Vite dev server
-#EXPOSE 5173
 
 # Expose the port used by Vite
 EXPOSE 5173

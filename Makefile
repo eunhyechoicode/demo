@@ -18,6 +18,11 @@ NAMESPACE=$(shell awk '/metadata:/ {found=1} found && /name:/ {print $$2; exit}'
 KUBECTL_DEPLOYMENT_FILE=deployment.yaml
 KUBECTL_SERVICE_FILE=service.yaml
 
+# Helm-related variables
+HELM_CHARTS=$(shell find helm/ -mindepth 1 -maxdepth 1 -type d -exec basename {} \;)
+HELM_ENVIRONMENT?=local
+# Default to local, can be overridden with local, qa, or prod
+
 # Helper tasks
 .PHONY: verify-image
 verify-image:
@@ -125,3 +130,71 @@ kind-dev-run: kind-create build verify-image namespace-create set-context kind-l
 	# Port-forward after confirming readiness
 	kubectl port-forward svc/my-app-service $(DOCKER_PORT):80 &
 	@echo "Kind Dev Run ready: http://localhost:$(DOCKER_PORT)"@echo "Kind Dev Run started. Hot-reloading should now be active at http://localhost:$(DOCKER_PORT)."@echo "Kind Dev Run started. Hot-reloading should now be active at http://localhost:$(DOCKER_PORT)."
+
+# Validate Helm charts
+.PHONY: helm-lint
+helm-lint:
+	@for chart in $(HELM_CHARTS); do \
+		echo "Linting helm/$$chart chart..."; \
+		echo "Base values file: helm/$$chart/values.yaml"; \
+		echo "Environment values file: helm/$$chart/$(HELM_ENVIRONMENT)/values.yaml"; \
+		if [ ! -f helm/$$chart/values.yaml ]; then \
+			echo "Error: Base values file does not exist: helm/$$chart/values.yaml"; \
+			exit 1; \
+		fi; \
+		if [ ! -f helm/$$chart/$(HELM_ENVIRONMENT)/values.yaml ]; then \
+			echo "Error: Environment values file does not exist: helm/$$chart/$(HELM_ENVIRONMENT)/values.yaml"; \
+			exit 1; \
+		fi; \
+		helm lint helm/$$chart \
+			-f helm/$$chart/values.yaml \
+			-f helm/$$chart/$(HELM_ENVIRONMENT)/values.yaml; \
+	done
+
+
+# Helm template command to preview the rendered manifests
+.PHONY: helm-template
+helm-template:
+	@for chart in $(HELM_CHARTS); do \
+		echo "Templating helm/$$chart chart..."; \
+		helm template helm/$$chart \
+			--values helm/$$chart/values.yaml \
+			--values helm/$$chart/$(HELM_ENVIRONMENT)/values.yaml; \
+	done
+
+# Install/upgrade Helm release
+.PHONY: helm-install
+helm-install:
+	@for chart in $(HELM_CHARTS); do \
+		echo "Installing/upgrading helm/$$chart chart..."; \
+		helm upgrade --install $$chart helm/$$chart \
+			--values helm/$$chart/values.yaml \
+			--values helm/$$chart/$(HELM_ENVIRONMENT)/values.yaml \
+			--namespace $(NAMESPACE) \
+			--create-namespace; \
+	done
+
+# Uninstall Helm release
+.PHONY: helm-uninstall
+helm-uninstall:
+	@for chart in $(HELM_CHARTS); do \
+		echo "Uninstalling $$chart release..."; \
+		helm uninstall $$chart --namespace $(NAMESPACE); \
+	done
+
+# Show Helm release status
+.PHONY: helm-status
+helm-status:
+	@for chart in $(HELM_CHARTS); do \
+		echo "Status for $$chart release:"; \
+		helm status $$chart --namespace $(NAMESPACE); \
+	done
+
+# List all Helm releases
+.PHONY: helm-list
+helm-list:
+	helm list --all-namespaces
+
+# Shortcut: Create cluster and deploy with Helm
+.PHONY: kind-helm-run
+kind-helm-run: kind-create build verify-image namespace-create set-context kind-load-image helm-install

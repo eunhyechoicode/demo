@@ -1,0 +1,12 @@
+replicaCount: 2
+
+ingress:
+  hosts:
+    - host: "localhost"
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - "localhost"
+      secretName: localhost-tls-secret
