@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Button } from '@mui/material';
 
 export default function MyButton({ children, ...props }) {
@@ -7,3 +8,7 @@ export default function MyButton({ children, ...props }) {
     </Button>
   );
 }
+
+MyButton.propTypes = {
+  children: PropTypes.node,
+};

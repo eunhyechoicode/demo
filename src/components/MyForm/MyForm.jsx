@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { MyFormContext } from './MyFormContext';
 
-const MyForm = ({ children, defaultValues, onSubmit }) => {
+export default function MyForm({ children, defaultValues, onSubmit }) {
   const { control, handleSubmit } = useForm({
     defaultValues: defaultValues || {},
   });
@@ -17,6 +18,10 @@ const MyForm = ({ children, defaultValues, onSubmit }) => {
       <form onSubmit={handleSubmit(handleFormSubmit)}>{children}</form>
     </MyFormContext.Provider>
   );
-};
+}
 
-export default MyForm;
+MyForm.propTypes = {
+  children: PropTypes.node,
+  defaultValues: PropTypes.object,
+  onSubmit: PropTypes.func,
+};
