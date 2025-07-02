@@ -1,1 +1,1 @@
-export { AnalyticsContext, AnalyticsProvider } from './AnalyticsProvider.jsx'
+export { AnalyticsProvider } from './AnalyticsProvider.jsx'

@@ -1,9 +1,6 @@
-import { createContext } from 'react'
-
 import PropTypes from 'prop-types';
 import { analytics } from "./analytics.js";
-
-export const AnalyticsContext = createContext(null)
+import AnalyticsContext from "./AnalyticsContext.jsx";
 
 export function AnalyticsProvider({ children }) {
     return (
