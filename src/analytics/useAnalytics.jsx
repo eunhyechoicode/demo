@@ -1,7 +1,6 @@
 import { useContext } from 'react'
-import { AnalyticsContext } from "./AnalyticsProvider.jsx";
+import AnalyticsContext from "./AnalyticsContext";
 
-// Custom hook to use analytics
 export default function useAnalytics() {
     const context = useContext(AnalyticsContext)
     if (context === null) {

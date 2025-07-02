@@ -5,7 +5,7 @@ import { AnalyticsProvider } from "./analytics";
 function App() {
   return (
       <AnalyticsProvider>
-        <RouterProvider router={router} />
+          <RouterProvider router={router}/>
       </AnalyticsProvider>
   );
 }

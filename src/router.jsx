@@ -3,25 +3,28 @@ import Home from './pages/Home';
 import About from './pages/About';
 import ErrorPage from './pages/ErrorPage';
 import LogIn from './pages/LogIn/LogIn';
+import Layout from "./pages/Layout.jsx";
 
 const router = createBrowserRouter(
     [
         {
             path: '/',
+            element: <Layout/>,
             errorElement: <ErrorPage />,
-            element: <Home />,
-        },
-        {
-            path: '/home',
-            element: <Home />,
-        },
-        {
-            path: '/login',
-            element: <LogIn />,
-        },
-        {
-            path: '/about',
-            element: <About />,
+            children: [
+                {
+                    path: '/home',
+                    element: <Home />,
+                },
+                {
+                    path: '/login',
+                    element: <LogIn />,
+                },
+                {
+                    path: '/about',
+                    element: <About />,
+                },
+            ]
         },
     ],
     {
