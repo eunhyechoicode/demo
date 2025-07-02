@@ -2,6 +2,7 @@ import { useState } from 'react';
 import MyPage from '../components/Mypage';
 import MyButton from '../components/MyButton';
 import { Typography, Stack } from '@mui/material';
+import useAnalytics from "../analytics/useAnalytics.jsx";
 
 export default function Home() {
   const [count, setCount] = useState(0);
@@ -13,6 +14,9 @@ export default function Home() {
   const handleDecrement = () => {
     setCount(prev => prev - 1);
   };
+
+  const analytics = useAnalytics()
+  console.log(analytics)
 
   return (
     <MyPage>
